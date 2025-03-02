@@ -68,13 +68,13 @@ int main(){
 
 void menu(){
     std::cout << "===============  Menu  ===============" << std::endl;
-    std::cout << "1.Creer une classe" << std::endl;
-    std::cout << "2.Afficher les classe" << std::endl;
-    std::cout << "3.Ajouter un etudiants" << std::endl;
-    std::cout << "4.Afficher tout les etudiants" << std::endl;
-    std::cout << "5.Afficher les etudiants d'une classe" << std::endl;
-    std::cout << "6.Afficher le bulletin d'un etudiant" << std::endl;
-    std::cout << "7.Quitter" << std::endl;
+    std::cout << "1. Creer une classe" << std::endl;
+    std::cout << "2. Afficher les classes" << std::endl;
+    std::cout << "3. Ajouter un etudiant" << std::endl;
+    std::cout << "4. Afficher tous les etudiants" << std::endl;
+    std::cout << "5. Afficher les etudiants d'une classe" << std::endl;
+    std::cout << "6. Afficher le bulletin d'un etudiant" << std::endl;
+    std::cout << "7. Quitter" << std::endl;
     std::cout << "======================================" << std::endl;
 };
 
@@ -83,16 +83,15 @@ char demande(std::string msg){
     do{
         std::cout << msg << std::endl;
         std::cin >> rep;
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); 
     } while (rep != 'o' && rep != 'n');
     return rep;
 };
 
 std::string saisieString(std::string msg){
     std::string str;
-    do{
-        std::cout << msg<< std::endl;
-        std::getline(std::cin, str);
-    } while (str.empty());
+    std::cout << msg << std::endl;
+    std::getline(std::cin, str);
     return str;
 };
 float saisieNote(){
@@ -100,6 +99,7 @@ float saisieNote(){
     do{
         std::cout << "Saisir une note: ";
         std::cin >> note;
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); 
     } while (note < 0 || note > 20);
     return note;
 };
@@ -109,6 +109,7 @@ Module saisieModule(){
     do{
         std::cout << "Saisir le coefficient du module: ";
         std::cin >> m.coeff;
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); 
     } while (m.coeff < 0);
     return m;
 };
@@ -176,14 +177,14 @@ void afficheModule(Module m){
     std::cout << "Coeff: " << m.coeff << std::endl;
 };
 float afficheNote(float tab[], int nbr){
-    int note = 0;
+    float somme = 0;
     if(nbr > 0){
         for (int i = 0; i < nbr; i++){
             int cpt = i + 1;
-            std::cout << "Note" << cpt << ": " << tab[i] << std::endl;
-            int note = note + tab[i];
+            std::cout << "Note " << cpt << ": " << tab[i] << std::endl;
+            somme += tab[i];
         }
-        return (note/nbr);
+        return somme / nbr;
     }else{
         std::cout << "Aucune note disponible" << std::endl;
         return 0;
@@ -195,14 +196,18 @@ float afficheEval(Eval e){
     return (somme * e.mod.coeff);
 };
 void afficheTabEval(Eval tab[], int nbr){
-    float moy{0};
-    int sommeCoeff{0};
+    float moy = 0;
+    int sommeCoeff = 0;
     if(nbr > 0){
         for (int i = 0; i < nbr; i++){
-            float moy = moy + afficheEval(tab[i]);
-            sommeCoeff = sommeCoeff + tab[i].mod.coeff;
+            moy += afficheEval(tab[i]);
+            sommeCoeff += tab[i].mod.coeff;
         }
-        moy = moy/sommeCoeff;
+        if (sommeCoeff > 0) {
+            moy /= sommeCoeff;
+        } else {
+            moy = 0;
+        }
         std::cout << "Moyenne: " << moy << std::endl;
     }else{
         std::cout << "Aucune evaluation disponible" << std::endl;
@@ -212,7 +217,7 @@ void afficheEtu(Etu e){
     std::cout << "Nom: " << e.nom << std::endl;
     std::cout << "Prenom: " << e.prenom << std::endl;
     std::cout << "Mat: " << e.mat << std::endl;
-    //afficheTabEval(e.tabEval,e.nbrEval);
+    //afficheTabEval(e.tabEval, e.nbrEval);
 };
 void afficheTabEtu(Etu tab[], int nbr){
     if(nbr > 0){
@@ -227,7 +232,7 @@ void afficheClasse(Classe c){
     std::cout << "Niveau: " << c.niveau << std::endl;
     std::cout << "Filiere: " << c.filiere << std::endl;
     std::cout << "Code : "<< c.code << std::endl;
-    //afficheTabEtu(c.tabEtu,c.nbrEtu);
+    //afficheTabEtu(c.tabEtu, c.nbrEtu);
 };
 void afficheTabClasse(Classe tab[], int nbr){
     if(nbr > 0){
